@@ -23,7 +23,7 @@ public class Game : MonoBehaviour {
         bgStars = new Dictionary<sbyte, BGStar>();
         stars = 0;
         //recordStars = 50;
-        bottom = new Simple(0, 0);
+        bottom = new Simple(0,0);
         platforms.Add(0, bottom); //Добавление нулевой платформы
 
         for (sbyte i = 1; i < 10; i++)
@@ -34,16 +34,13 @@ public class Game : MonoBehaviour {
         }
 
         //Добавление трех фоновых спрайтов со звездами
-        bgBottom = new BGStar();
-        bgBottom.Obj.transform.position = new Vector3(0, 0, -1);
+        bgBottom = new BGStar(-11);
         bgStars.Add(0, bgBottom);
         for (sbyte i = 1; i < 3; i++)
         {
-            BGStar bgNow = new BGStar();
             BGStar bgPrevious;
             bgStars.TryGetValue((sbyte)(i - 1), out bgPrevious);
-            bgNow.Obj.transform.position = new Vector3(0, bgPrevious.Obj.transform.position.y + 11, -1);
-            bgStars.Add(i, bgNow);
+            bgStars.Add(i, new BGStar(bgPrevious.Obj.transform.position.y + 11));
         }   
 
         updateScene = true;
@@ -52,19 +49,13 @@ public class Game : MonoBehaviour {
     void FixedUpdate()
     {
         updateScene = GameObject.FindGameObjectWithTag("Player").transform.position.y - bottom.PosY <= 6.0f;
-        BGStar tempStars;
-        bgStars.TryGetValue(2, out tempStars);
-        updateBackground = tempStars.Obj.GetComponent<Background>().IsPlayerInside();
-        Debug.Log(updateBackground);
+        updateBackground = GameObject.FindGameObjectWithTag("Player").transform.position.y - bgBottom.Obj.transform.position.y <= 10.0f;
 
         if (!updateScene)
         {
             //Удаление самой нижней платформы
             Destroy(bottom.Exemplar);
             platforms.Remove(0);
-
-            //Удаление нижнего фона со звездами
-
 
             //Переприсвоение индексов платформ
             for (sbyte i = 1; i < 10; i++)
@@ -84,6 +75,29 @@ public class Game : MonoBehaviour {
             if (!updateScene) return;
         }
         
+        if (!updateBackground)
+        {
+            //Удаление нижнего фона со звездами
+            Destroy(bgBottom.Obj);
+            bgStars.Remove(0);
+
+            //Переприсвоение индексов фонов
+            for (sbyte i=1; i<3; i++)
+            {
+                BGStar bgTemp;
+                bgStars.TryGetValue(i, out bgTemp);
+                bgStars.Add((sbyte)(i - 1), bgTemp);
+                bgStars.Remove(i);
+            }
+
+            //Добавление нового фона
+            BGStar bgPrevious;
+            bgStars.TryGetValue(1, out bgPrevious);
+            bgStars.Add(2, new BGStar(bgPrevious.Obj.transform.position.y + 11));
+            bgStars.TryGetValue(0, out bgBottom);
+
+            if (!updateBackground) return;
+        }
         
     }
 

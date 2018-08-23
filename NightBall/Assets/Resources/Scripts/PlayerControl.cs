@@ -29,12 +29,12 @@ public class PlayerControl : MonoBehaviour {
         }
 
         //Управление персонажем
-        if (Input.GetKey(KeyCode.D) && transform.position.x < 2.5)
+        if (Input.GetKey(KeyCode.D) && transform.position.x < 2.8)
         {
             dirX = 1;
             Move();
         }
-        else if (Input.GetKey(KeyCode.A) && transform.position.x > -2.5)
+        else if (Input.GetKey(KeyCode.A) && transform.position.x > -2.8)
         {
             dirX = -1;
             Move();

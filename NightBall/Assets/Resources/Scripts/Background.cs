@@ -13,28 +13,7 @@ public class Background : MonoBehaviour {
     }
 
     void Update () {
-        transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-    }
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision.collider.tag == "Player")
-        {
-            playerInside = true;
-        }
-    }
-
-    void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.collider.tag == "Player")
-        {
-            playerInside = false;
-        }
-    }
-
-    public bool IsPlayerInside ()
-    {
-        return playerInside;
+        transform.position = new Vector3(transform.position.x, (player.transform.position.y - 11) / 2, transform.position.z);
     }
 }
 
