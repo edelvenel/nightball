@@ -4,21 +4,19 @@ using UnityEngine;
 
 public class Platform {
 
-    float posX;
-    float posY;
     protected GameObject platform;
     protected sbyte jumpHeight;
 
     public float PosX
     {
-        get { return posX; }
-        set { posX = value; }
+        get { return platform.transform.position.x; }
+        set { platform.transform.position = new Vector3 (value, platform.transform.position.y, platform.transform.position.z); }
     }
 
     public float PosY
     {
-        get { return posY; }
-        set { posY = value; }
+        get { return platform.transform.position.y; }
+        set { platform.transform.position = new Vector3(platform.transform.position.x, value, platform.transform.position.z); }
     }
 
     public GameObject Exemplar
@@ -26,18 +24,8 @@ public class Platform {
         get { return platform; }
     }
 
-    public void TransPosition (float x, float y, float z)
-    {
-        platform.transform.position = new Vector3(x, y, z);
-    }
-
     public sbyte Height
     {
         get { return jumpHeight; }
-    }
-
-    protected void SetName(string name)
-    {
-        platform.name = name;
     }
 }

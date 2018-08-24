@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Simple
   - Trampoline
+  - Star
+  - Count
   layers:
   - Default
   - TransparentFX

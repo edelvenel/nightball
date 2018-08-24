@@ -65,10 +65,15 @@
     <Compile Include="Assets\Resources\Scripts\BGStar.cs" />
     <Compile Include="Assets\Resources\Scripts\Game.cs" />
     <Compile Include="Assets\Resources\Scripts\MainCamera.cs" />
+    <Compile Include="Assets\Resources\Scripts\OldStar.cs" />
     <Compile Include="Assets\Resources\Scripts\Platform.cs" />
     <Compile Include="Assets\Resources\Scripts\PlayerControl.cs" />
     <Compile Include="Assets\Resources\Scripts\Simple.cs" />
+    <Compile Include="Assets\Resources\Scripts\SimpleStar.cs" />
+    <Compile Include="Assets\Resources\Scripts\Star.cs" />
+    <Compile Include="Assets\Resources\Scripts\SuperStar.cs" />
     <Compile Include="Assets\Resources\Scripts\Trampoline.cs" />
+    <Compile Include="Assets\Resources\Scripts\YoungStar.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>D:/NightBall/NightBall/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

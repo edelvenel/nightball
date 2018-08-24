@@ -72,4 +72,18 @@ public class PlayerControl : MonoBehaviour {
         Jump(platform.Height);
         Destroy(platform.Exemplar);
     }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Star")
+        {
+            string name = collision.name;
+            ObjectHandle handle = Activator.CreateInstance("Assembly-CSharp", name);
+            Star star = (Star)handle.Unwrap();
+            Game.AddPoints(star.Points);
+            Destroy(star.Exemplar);
+            Destroy(collision);
+            collision.GetComponent<SpriteRenderer>().enabled = false;
+        }
+    }
 }
