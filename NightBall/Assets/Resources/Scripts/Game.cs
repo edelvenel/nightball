@@ -49,7 +49,7 @@ public class Game : MonoBehaviour {
         }
 
         //Добавление звезд
-        starBottom = RandomStar(new SimpleStar());
+        starBottom = RandomStar(new SimpleStar(Random.Range(-2.0f, 2.0f), Random.Range(1.0f, 3.0f)));
         stars.Add(0, starBottom);
         for (sbyte i = 1; i < 5; i++)
         {

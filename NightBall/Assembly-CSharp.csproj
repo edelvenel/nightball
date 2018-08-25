@@ -71,6 +71,7 @@
     <Compile Include="Assets\Resources\Scripts\Simple.cs" />
     <Compile Include="Assets\Resources\Scripts\SimpleStar.cs" />
     <Compile Include="Assets\Resources\Scripts\Star.cs" />
+    <Compile Include="Assets\Resources\Scripts\StarCheck.cs" />
     <Compile Include="Assets\Resources\Scripts\SuperStar.cs" />
     <Compile Include="Assets\Resources\Scripts\Trampoline.cs" />
     <Compile Include="Assets\Resources\Scripts\YoungStar.cs" />
