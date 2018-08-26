@@ -65,6 +65,8 @@
     <Compile Include="Assets\Resources\Scripts\BGStar.cs" />
     <Compile Include="Assets\Resources\Scripts\Game.cs" />
     <Compile Include="Assets\Resources\Scripts\MainCamera.cs" />
+    <Compile Include="Assets\Resources\Scripts\Move.cs" />
+    <Compile Include="Assets\Resources\Scripts\MovingPlatform.cs" />
     <Compile Include="Assets\Resources\Scripts\OldStar.cs" />
     <Compile Include="Assets\Resources\Scripts\Platform.cs" />
     <Compile Include="Assets\Resources\Scripts\PlayerControl.cs" />

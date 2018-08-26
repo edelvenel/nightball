@@ -8,6 +8,7 @@ TagManager:
   - Trampoline
   - Star
   - Count
+  - MovingPlatform
   layers:
   - Default
   - TransparentFX

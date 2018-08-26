@@ -152,26 +152,76 @@ public class Game : MonoBehaviour {
 	}
 
     //Создание случайной платформы
-    Platform RandomPlatform (Platform previous)
+    Platform RandomPlatform(Platform previous)
     {
         float x = Random.Range(-2.0f, 2.0f);
         float y = CalculateY(previous.PosX, previous.PosY, x);
         Platform result;
         int random = Random.Range(0, 100);
-        //Обычная платформа
-        if (random < 40)
+        if (starsCount < 100)
         {
-            result = new Simple(x, y);
+            //Обычная платформа
+            if (random < 40)
+            {
+                result = new Simple(x, y);
+            }
+            //Трамплин
+            else if (random >= 40 && random <= 45)
+            {
+                result = new Trampoline(x, y);
+            }
+            //Другое
+            else if (random >= 45 && random <= 50)
+            {
+                result = new MovingPlatform(x, y);
+            }
+            else
+            {
+                result = new Simple(x, y);
+            }
         }
-        //Трамплин
-        else if (random >= 40 && random <=45)
+        else if (starsCount >= 100 && starsCount <= 300)
         {
-            result = new Trampoline(x, y);
-        }
-        //Другое
-        else
+            //Обычная платформа
+            if (random < 30)
+            {
+                result = new Simple(x, y);
+            }
+            //Трамплин
+            else if (random >= 30 && random <= 45)
+            {
+                result = new Trampoline(x, y);
+            }
+            //Другое
+            else if (random >= 45 && random <= 60)
+            {
+                result = new MovingPlatform(x, y);
+            }
+            else
+            {
+                result = new Simple(x, y);
+            }
+        } else
         {
-            result = new Simple(x, y);
+            //Обычная платформа
+            if (random < 40)
+            {
+                result = new Simple(x, y);
+            }
+            //Трамплин
+            else if (random >= 40 && random <= 45)
+            {
+                result = new Trampoline(x, y);
+            }
+            //Другое
+            else if (random >= 45 && random <= 50)
+            {
+                result = new MovingPlatform(x, y);
+            }
+            else
+            {
+                result = new Simple(x, y);
+            }
         }
         return result;
     }
@@ -183,16 +233,16 @@ public class Game : MonoBehaviour {
         float y = previous.PosY + Random.Range(2.5f, 6.0f);
 
         Star result;
-        int random = Random.Range(0, 85);
-        if (random < 50)
+        float random = Random.Range(0.0f, 81.0f);
+        if (random < 70)
         {
             result = new SimpleStar(x, y);
         }
-        else if (random >=50 && random < 70)
+        else if (random >=70 && random < 75)
         {
             result = new YoungStar(x, y);
         }
-        else if (random >= 70 && random < 80)
+        else if (random >= 76 && random < 79)
         {
             result = new OldStar(x, y);
         } else
