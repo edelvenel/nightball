@@ -149,6 +149,10 @@ public class Game : MonoBehaviour {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name); 
         }
         GameObject.FindGameObjectWithTag("Count").GetComponent<Text>().text = "Count: " + starsCount.ToString() + " / " + recordStars.ToString();
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+        }
 	}
 
     //Создание случайной платформы
