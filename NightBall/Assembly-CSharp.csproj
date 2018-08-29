@@ -76,6 +76,7 @@
     <Compile Include="Assets\Resources\Scripts\Star.cs" />
     <Compile Include="Assets\Resources\Scripts\StarCheck.cs" />
     <Compile Include="Assets\Resources\Scripts\SuperStar.cs" />
+    <Compile Include="Assets\Resources\Scripts\Touch.cs" />
     <Compile Include="Assets\Resources\Scripts\Trampoline.cs" />
     <Compile Include="Assets\Resources\Scripts\YoungStar.cs" />
     <Reference Include="UnityEditor.StandardEvents">

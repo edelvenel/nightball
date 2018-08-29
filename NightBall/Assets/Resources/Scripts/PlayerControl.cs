@@ -9,9 +9,13 @@ public class PlayerControl : MonoBehaviour {
     readonly sbyte speed = 5; // скорость по оси x
     sbyte dirX = 0; //направление по оси x;
     Rigidbody2D body;
+    public GameObject left;
+    public GameObject right;
 
 	void Start ()
     {
+
+        Physics2D.IgnoreLayerCollision(0, 5);
         body = GetComponent<Rigidbody2D>();
         Jump(5);
 	}
@@ -29,12 +33,12 @@ public class PlayerControl : MonoBehaviour {
         }
 
         //Управление персонажем
-        if (Input.GetKey(KeyCode.D) && transform.position.x < 2.8)
+        if ((Input.GetKey(KeyCode.D) || right.GetComponent<Touch>().IsTouched) && transform.position.x < 2.8)
         {
             dirX = 1;
             Move();
         }
-        else if (Input.GetKey(KeyCode.A) && transform.position.x > -2.8)
+        else if ((Input.GetKey(KeyCode.A) || left.GetComponent<Touch>().IsTouched) && transform.position.x > -2.8)
         {
             dirX = -1;
             Move();
@@ -65,15 +69,16 @@ public class PlayerControl : MonoBehaviour {
     }
 
     void OnCollisionEnter2D (Collision2D collision)
-    { 
-        string name = collision.collider.name;
-        ObjectHandle handle = Activator.CreateInstance("Assembly-CSharp", name);
-        Platform platform = (Platform)handle.Unwrap();
-        Jump(platform.Height);
-        Destroy(platform.Exemplar);
-        //Исчезновение платформы
-        Destroy(collision.collider);
-        collision.collider.GetComponent<SpriteRenderer>().enabled = false;
+    {
+            
+            string name = collision.collider.name;
+            ObjectHandle handle = Activator.CreateInstance("Assembly-CSharp", name);
+            Platform platform = (Platform)handle.Unwrap();
+            Jump(platform.Height);
+            Destroy(platform.Exemplar);
+            //Исчезновение платформы
+            Destroy(collision.collider);
+            collision.collider.GetComponent<SpriteRenderer>().enabled = false;      
     }
 
     void OnTriggerEnter2D(Collider2D collision)
