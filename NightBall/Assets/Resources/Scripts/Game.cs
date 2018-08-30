@@ -6,6 +6,7 @@ using System.IO;
 using UnityEngine.UI;
 using System.Runtime.Serialization.Formatters.Binary;
 
+[System.Serializable]
 public class Game : MonoBehaviour {
 
     static int starsCount; //Кол-во собранных звезд
@@ -26,7 +27,7 @@ public class Game : MonoBehaviour {
         bgStars = new Dictionary<sbyte, BGStar>();
         stars = new Dictionary<sbyte, Star>();
         starsCount = 0;
-        recordStars = ReadOldRecord();
+        recordStars = LoadOldRecord();
 
         //Добавление платформ
         bottom = new Simple();
@@ -146,7 +147,9 @@ public class Game : MonoBehaviour {
         {
             SaveNewRecord(starsCount);
             platforms.Clear();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name); 
+            stars.Clear();
+            bgStars.Clear();
+            SceneManager.LoadScene("SimpleScene", LoadSceneMode.Single);
         }
         GameObject.FindGameObjectWithTag("Count").GetComponent<Text>().text = "Count: " + starsCount.ToString() + " / " + recordStars.ToString();
         if (Input.GetKey(KeyCode.Escape))
@@ -281,9 +284,10 @@ public class Game : MonoBehaviour {
     //Сохранение рекорда в файл
     void SaveNewRecord(int count)
     {
-        if (ReadOldRecord() < starsCount)
+        if (LoadOldRecord() < starsCount)
         {
-            FileStream file;
+            PlayerPrefs.SetInt("Record", count);
+            /*FileStream file;
             if (!File.Exists("Assets/Resources/Saves/record.dat"))
             {
                 file = File.Create("Assets/Resources/Saves/record.dat");
@@ -294,15 +298,15 @@ public class Game : MonoBehaviour {
             }
             BinaryFormatter bf = new BinaryFormatter();
             bf.Serialize(file, count);
-            file.Close();
+            file.Close();*/
         }
     }
 
     //Чтение рекорда из файла
-    int ReadOldRecord()
+    int LoadOldRecord()
     {
-        int count;
-        if (!File.Exists("Assets/Resources/Saves/record.dat"))
+        int count = PlayerPrefs.GetInt("Record");
+        /*if (!File.Exists("Assets/Resources/Saves/record.dat"))
         {
             count = 0;
         }
@@ -312,7 +316,7 @@ public class Game : MonoBehaviour {
             FileStream file = File.Open("Assets/Resources/Saves/record.dat", FileMode.Open);
             count = (int)bf.Deserialize(file);
             file.Close();
-        }
+        }*/
         return count;
     }
 }

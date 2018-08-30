@@ -76,9 +76,6 @@ public class PlayerControl : MonoBehaviour {
             Platform platform = (Platform)handle.Unwrap();
             Jump(platform.Height);
             Destroy(platform.Exemplar);
-            //Исчезновение платформы
-            Destroy(collision.collider);
-            collision.collider.GetComponent<SpriteRenderer>().enabled = false;      
     }
 
     void OnTriggerEnter2D(Collider2D collision)
