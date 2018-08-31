@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Класс платформ
 public class Platform {
 
     protected GameObject platform;
@@ -16,7 +17,7 @@ public class Platform {
     public float PosY
     {
         get { return platform.transform.position.y; }
-        set { platform.transform.position = new Vector3(platform.transform.position.x, value, platform.transform.position.z); }
+        set { platform.transform.position = new Vector3 (platform.transform.position.x, value, platform.transform.position.z); }
     }
 
     public GameObject Exemplar

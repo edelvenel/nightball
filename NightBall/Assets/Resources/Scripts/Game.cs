@@ -6,32 +6,39 @@ using System.IO;
 using UnityEngine.UI;
 using System.Runtime.Serialization.Formatters.Binary;
 
+// Главный скрипт игры (компонент Main Camera)
 [System.Serializable]
 public class Game : MonoBehaviour {
 
-    static int starsCount; //Кол-во собранных звезд
-    static int recordStars; // Рекорд
-    Dictionary<sbyte, Platform> platforms; //Платформы на сцене
-    Dictionary<sbyte, BGStar> bgStars;
-    Dictionary<sbyte, Star> stars;
-    Platform bottom; //Самая нижняя платформа (нулевая)
-    bool updateScene; //Была ли сцена обновлена
-    bool updateBackground;
-    bool updateStars;
-    BGStar bgBottom; //Нижний фон со звездами
-    Star starBottom; //Нижняя звезда
+    static int starsCount; // кол-во собранных звезд
+    static int recordStars; // рекорд
+
+    Dictionary<sbyte, Platform> platforms; // платформы на сцене
+    Dictionary<sbyte, BGStar> bgStars; // фоны со звездами
+    Dictionary<sbyte, Star> stars; // звезды для сбора
+    
+    bool updateScene; // была ли сцена с платформами обновлена
+    bool updateBackground; // были ли обновлен задний план
+    bool updateStars; // были ли обновлены звезды для сбора
+
+    Platform bottom; // самая нижняя платформа
+    BGStar bgBottom; // самый нижний фон со звездами
+    Star starBottom; // самая нижняя звезда
 
 
-    void Awake () {
+    void Awake ()
+    {
         platforms = new Dictionary<sbyte, Platform>();
         bgStars = new Dictionary<sbyte, BGStar>();
         stars = new Dictionary<sbyte, Star>();
+
         starsCount = 0;
         recordStars = LoadOldRecord();
 
-        //Добавление платформ
+        //Добавление начальных 10 платформ
         bottom = new Simple();
-        platforms.Add(0, bottom); //Добавление нулевой платформы
+        platforms.Add(0, bottom);
+
         for (sbyte i = 1; i < 10; i++)
         {
             Platform previous;
@@ -39,9 +46,10 @@ public class Game : MonoBehaviour {
             platforms.Add(i, RandomPlatform(previous));
         }
 
-        //Добавление трех фоновых спрайтов со звездами
-        bgBottom = new BGStar(-11);
+        //Добавление 3 фоновых спрайтов со звездами
+        bgBottom = new BGStar(-11); //Первый фон со звездами находится на 11 ниже Игрока (11 - высота фонового спрайта)
         bgStars.Add(0, bgBottom);
+
         for (sbyte i = 1; i < 3; i++)
         {
             BGStar bgPrevious;
@@ -52,13 +60,13 @@ public class Game : MonoBehaviour {
         //Добавление звезд
         starBottom = RandomStar(new SimpleStar(Random.Range(-2.0f, 2.0f), Random.Range(1.0f, 3.0f)));
         stars.Add(0, starBottom);
+
         for (sbyte i = 1; i < 5; i++)
         {
             Star starPrevious;
             stars.TryGetValue((sbyte)(i - 1), out starPrevious);
             stars.Add(i, RandomStar(starPrevious));
         }
-        updateScene = true;
     }
 
     void FixedUpdate()
@@ -69,11 +77,11 @@ public class Game : MonoBehaviour {
 
         if (!updateScene)
         {
-            //Удаление самой нижней платформы
+            // Удаление самой нижней платформы
             Destroy(bottom.Exemplar);
             platforms.Remove(0);
 
-            //Переприсвоение индексов платформ
+            // Переприсвоение индексов платформ
             for (sbyte i = 1; i < 10; i++)
             {
                 Platform temp;
@@ -82,7 +90,7 @@ public class Game : MonoBehaviour {
                 platforms.Remove(i);
             }
 
-            //Добавление новой платформы
+            // Добавление новой платформы
             Platform previous;
             platforms.TryGetValue(8, out previous);
             platforms.Add(9, RandomPlatform(previous));
@@ -93,11 +101,11 @@ public class Game : MonoBehaviour {
         
         if (!updateBackground)
         {
-            //Удаление нижнего фона со звездами
+            // Удаление нижнего фона со звездами
             Destroy(bgBottom.Obj);
             bgStars.Remove(0);
 
-            //Переприсвоение индексов фонов
+            // Переприсвоение индексов фонов
             for (sbyte i=1; i<3; i++)
             {
                 BGStar bgTemp;
@@ -106,7 +114,7 @@ public class Game : MonoBehaviour {
                 bgStars.Remove(i);
             }
 
-            //Добавление нового фона
+            // Добавление нового фона
             BGStar bgPrevious;
             bgStars.TryGetValue(1, out bgPrevious);
             bgStars.Add(2, new BGStar(bgPrevious.Obj.transform.position.y + 11));
@@ -117,11 +125,11 @@ public class Game : MonoBehaviour {
 
         if (!updateStars)
         {
-            //Удаление нижней звезды
+            // Удаление нижней звезды
             Destroy(starBottom.Exemplar);
             stars.Remove(0);
 
-            //Переприсваивание индексов звезд
+            // Переприсваивание индексов звезд
             for (sbyte i=1; i<5; i++)
             {
                 Star starTemp;
@@ -130,7 +138,7 @@ public class Game : MonoBehaviour {
                 stars.Remove(i);
             }
 
-            //Добавление новой звезды
+            // Добавление новой звезды
             Star starPrevious;
             stars.TryGetValue(3, out starPrevious);
             stars.Add(4, RandomStar(starPrevious));
@@ -142,98 +150,108 @@ public class Game : MonoBehaviour {
     }
 
     void Update () {
-		//Смерть
+		// Смерть
         if (bottom.PosY - GameObject.FindGameObjectWithTag("Player").transform.position.y > 4)
         {
             SaveNewRecord(starsCount);
-            platforms.Clear();
-            stars.Clear();
-            bgStars.Clear();
             SceneManager.LoadScene("SimpleScene", LoadSceneMode.Single);
         }
+
+        // Вывод счета на экран
         GameObject.FindGameObjectWithTag("Count").GetComponent<Text>().text = "Count: " + starsCount.ToString() + " / " + recordStars.ToString();
+
+        // Выход из игры
         if (Input.GetKey(KeyCode.Escape))
         {
+            SaveNewRecord(starsCount);
             SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
         }
 	}
 
     //Создание случайной платформы
-    Platform RandomPlatform(Platform previous)
+    Platform RandomPlatform (Platform previous)
     {
         float x = Random.Range(-2.0f, 2.0f);
+        // Высчитывается позиция по оси Y так, чтобы новая платформа не была слишком близко к предыдущей в случае одинаковой позиции по X
         float y = CalculateY(previous.PosX, previous.PosY, x);
         Platform result;
         int random = Random.Range(0, 100);
+
+        // Низкая сложность
         if (starsCount < 100)
         {
-            //Обычная платформа
+            // Обычная платформа
             if (random < 40)
             {
-                result = new Simple(x, y);
+                result = new Simple (x, y);
             }
-            //Трамплин
+            // Батут
             else if (random >= 40 && random <= 45)
             {
-                result = new Trampoline(x, y);
+                result = new Trampoline (x, y);
             }
-            //Другое
+            // Движущаяся платформа
             else if (random >= 45 && random <= 50)
             {
-                result = new MovingPlatform(x, y);
+                result = new MovingPlatform (x, y);
             }
+            // Другое
             else
             {
-                result = new Simple(x, y);
+                result = new Simple (x, y);
             }
         }
+        // Средняя сложность
         else if (starsCount >= 100 && starsCount <= 300)
         {
             //Обычная платформа
             if (random < 30)
             {
-                result = new Simple(x, y);
+                result = new Simple (x, y);
             }
             //Трамплин
             else if (random >= 30 && random <= 45)
             {
-                result = new Trampoline(x, y);
+                result = new Trampoline (x, y);
             }
             //Другое
             else if (random >= 45 && random <= 60)
             {
-                result = new MovingPlatform(x, y);
+                result = new MovingPlatform (x, y);
             }
             else
             {
-                result = new Simple(x, y);
-            }
-        } else
-        {
-            //Обычная платформа
-            if (random < 40)
-            {
-                result = new Simple(x, y);
-            }
-            //Трамплин
-            else if (random >= 40 && random <= 45)
-            {
-                result = new Trampoline(x, y);
-            }
-            //Другое
-            else if (random >= 45 && random <= 50)
-            {
-                result = new MovingPlatform(x, y);
-            }
-            else
-            {
-                result = new Simple(x, y);
+                result = new Simple (x, y);
             }
         }
+        // Высокая сложность
+        else
+        {
+            //Обычная платформа
+            if (random < 20)
+            {
+                result = new Simple (x, y);
+            }
+            //Трамплин
+            else if (random >= 20 && random <= 45)
+            {
+                result = new Trampoline (x, y);
+            }
+            //Другое
+            else if (random >= 45 && random <= 60)
+            {
+                result = new MovingPlatform (x, y);
+            }
+            else
+            {
+                result = new Simple (x, y);
+            }
+        }
+
         return result;
     }
 
-    //Создание случайной звезды!!!
+    // Создание случайной звезды
     Star RandomStar (Star previous)
     {
         float x = Random.Range(-2.0f, 2.0f);
@@ -241,6 +259,7 @@ public class Game : MonoBehaviour {
 
         Star result;
         float random = Random.Range(0.0f, 81.0f);
+
         if (random < 70)
         {
             result = new SimpleStar(x, y);
@@ -256,9 +275,9 @@ public class Game : MonoBehaviour {
         {
             result = new SuperStar(x, y);
         }
+
         return result;
     }
-
 
     //Вычисление координаты Y для новой платформы
     float CalculateY(float prevX, float prevY, float x)
@@ -267,7 +286,8 @@ public class Game : MonoBehaviour {
         if (Mathf.Abs(prevX - x) < 1.2f)
         {
             result = Random.Range(2.0f, 3.0f) + prevY;
-        } else
+        }
+        else
         {
             result = Random.Range(0.5f, 3.0f) + prevY;
         }
@@ -281,42 +301,19 @@ public class Game : MonoBehaviour {
         starsCount += points;
     }
 
-    //Сохранение рекорда в файл
-    void SaveNewRecord(int count)
+    //Сохранение
+    void SaveNewRecord (int count)
     {
         if (LoadOldRecord() < starsCount)
         {
             PlayerPrefs.SetInt("Record", count);
-            /*FileStream file;
-            if (!File.Exists("Assets/Resources/Saves/record.dat"))
-            {
-                file = File.Create("Assets/Resources/Saves/record.dat");
-            }
-            else
-            {
-                file = File.OpenWrite("Assets/Resources/Saves/record.dat");
-            }
-            BinaryFormatter bf = new BinaryFormatter();
-            bf.Serialize(file, count);
-            file.Close();*/
         }
     }
 
-    //Чтение рекорда из файла
+    // Загрузка сохранения
     int LoadOldRecord()
     {
         int count = PlayerPrefs.GetInt("Record");
-        /*if (!File.Exists("Assets/Resources/Saves/record.dat"))
-        {
-            count = 0;
-        }
-        else
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open("Assets/Resources/Saves/record.dat", FileMode.Open);
-            count = (int)bf.Deserialize(file);
-            file.Close();
-        }*/
         return count;
     }
 }

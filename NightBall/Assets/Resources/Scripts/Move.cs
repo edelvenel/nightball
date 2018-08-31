@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Скрипт движения для MovingPlatform
 public class Move : MonoBehaviour {
 
-    int dirX;
+    int dirX; // направление по оси x
     Rigidbody2D body;
-    bool borderCheck;
+    bool borderCheck; // отслеживание пересечения с границей экрана
 
     private void Start()
     {
@@ -17,23 +18,24 @@ public class Move : MonoBehaviour {
     private void FixedUpdate()
     {
         borderCheck = transform.position.x < -2.5f || transform.position.x > 2.5f;
+
         if (borderCheck)
         {
             if (transform.position.x > 2.5f)
             {
                 dirX = -1;
-            } else
+            }
+            else
             {
                 dirX = 1;
             }
-           
         }
+
         if (!borderCheck) return;
     }
 
-    void Update () {
-
+    void Update ()
+    {
         body.velocity = new Vector2(2 * dirX, body.velocity.y);
-
     }
 }

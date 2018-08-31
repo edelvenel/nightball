@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Класс звезд
 public class Star {
 
     protected GameObject star;
@@ -21,7 +22,7 @@ public class Star {
     public float PosY
     {
         get { return star.transform.position.y; }
-        set { star.transform.position = new Vector3(star.transform.position.x, value, star.transform.position.z); }
+        set { star.transform.position = new Vector3 (star.transform.position.x, value, star.transform.position.z); }
     }
 
     public int Points

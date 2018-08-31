@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Скрипт для главной камеры
 public class MainCamera : MonoBehaviour {
 
     Transform player;

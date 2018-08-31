@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Скрипт для фона со звездами
 public class Background : MonoBehaviour {
 
     Transform player;
-    bool playerInside;
 
     void Start()
     {
@@ -13,6 +13,8 @@ public class Background : MonoBehaviour {
     }
 
     void Update () {
+        // Положение объекта по оси Y ниже относительно позиции Игрока на 11 (статичная высота объекта) и
+        // ее изменение находится в зависимости 1/2 от перемещения Игрока по оси Y
         transform.position = new Vector3(transform.position.x, (player.transform.position.y - 11) / 2, transform.position.z);
     }
 }

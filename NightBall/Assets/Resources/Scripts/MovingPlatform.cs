@@ -2,23 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Подкласс платформ "Движущаяся платформа"
 public class MovingPlatform : Platform {
 
-    public MovingPlatform()
+    public MovingPlatform ()
     {
         Data();
-        platform.transform.position = new Vector3(0, 0, -2);
+        platform.transform.position = new Vector3 (0, 0, -2);
     }
 
-    public MovingPlatform(float x, float y)
+    public MovingPlatform (float x, float y)
     {
-        Data();
-        platform.transform.position = new Vector3(x, y, -2);
+        Data ();
+        platform.transform.position = new Vector3 (x, y, -2);
     }
 
-    void Data()
+    void Data ()
     {
-        platform = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/MovingPlatform"));
+        platform = GameObject.Instantiate (Resources.Load<GameObject>("Prefabs/MovingPlatform"));
         jumpHeight = 10;
         platform.name = "MovingPlatform";
     }

@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Скрипт проверки для объектов left и right на нажатие или отжатие кнопки мыши/прикосновения или отпускания на тачпаде в области триггера
 public class Touch : MonoBehaviour {
 
-    public bool onTouched;
-
-    void Update()
-    {
-        
-    }
+    bool onTouched;
 
     public bool IsTouched
     {
@@ -25,5 +21,4 @@ public class Touch : MonoBehaviour {
     {
         onTouched = false;
     }
-
 }
