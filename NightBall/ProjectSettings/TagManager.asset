@@ -10,6 +10,7 @@ TagManager:
   - Count
   - MovingPlatform
   - Touch
+  - Fake
   layers:
   - Default
   - TransparentFX

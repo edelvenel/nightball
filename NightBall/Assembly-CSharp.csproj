@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Assets\Resources\Scripts\Background.cs" />
     <Compile Include="Assets\Resources\Scripts\BGStar.cs" />
+    <Compile Include="Assets\Resources\Scripts\Fake.cs" />
     <Compile Include="Assets\Resources\Scripts\Game.cs" />
     <Compile Include="Assets\Resources\Scripts\MainCamera.cs" />
     <Compile Include="Assets\Resources\Scripts\MainMenu.cs" />

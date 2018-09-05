@@ -33,12 +33,12 @@ public class PlayerControl : MonoBehaviour {
         }
 
         // Управление персонажем
-        if ((Input.GetKey(KeyCode.D) || right.GetComponent<Touch>().IsTouched) && transform.position.x < 2.8)
+        if ((Input.GetKey(KeyCode.D) || right.GetComponent<Touch>().IsTouched) && !(Input.GetKey(KeyCode.A) || left.GetComponent<Touch>().IsTouched) && transform.position.x < 2.8)
         {
             dirX = 1;
             Move();
         }
-        else if ((Input.GetKey(KeyCode.A) || left.GetComponent<Touch>().IsTouched) && transform.position.x > -2.8)
+        else if ((Input.GetKey(KeyCode.A) || left.GetComponent<Touch>().IsTouched) && !(Input.GetKey(KeyCode.D) || right.GetComponent<Touch>().IsTouched) && transform.position.x > -2.8)
         {
             dirX = -1;
             Move();
@@ -79,6 +79,11 @@ public class PlayerControl : MonoBehaviour {
         Platform platform = (Platform)handle.Unwrap();
         Jump(platform.Height);
         Destroy(platform.Exemplar);
+        if (name == "Fake")
+        {
+            collision.collider.enabled = false;
+            collision.collider.GetComponent<SpriteRenderer>().enabled = false;
+        }
     }
 
     // Отслеживание пересечений со звездами

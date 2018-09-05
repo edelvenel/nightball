@@ -195,6 +195,11 @@ public class Game : MonoBehaviour {
             {
                 result = new MovingPlatform (x, y);
             }
+            // Исчезающая платформа
+            else if (random > 50 && random <=60)
+            {
+                result = new Fake(x, y);
+            }
             // Другое
             else
             {
@@ -204,21 +209,27 @@ public class Game : MonoBehaviour {
         // Средняя сложность
         else if (starsCount >= 100 && starsCount <= 300)
         {
-            //Обычная платформа
+            // Обычная платформа
             if (random < 30)
             {
                 result = new Simple (x, y);
             }
-            //Трамплин
+            // Батут
             else if (random >= 30 && random <= 45)
             {
                 result = new Trampoline (x, y);
             }
-            //Другое
+            // Движущаяся платформа
             else if (random >= 45 && random <= 60)
             {
                 result = new MovingPlatform (x, y);
             }
+            // Исчезающая платформа
+            else if (random > 60 && random <= 75)
+            {
+                result = new Fake(x, y);
+            }
+            //Другое
             else
             {
                 result = new Simple (x, y);
@@ -227,21 +238,27 @@ public class Game : MonoBehaviour {
         // Высокая сложность
         else
         {
-            //Обычная платформа
+            // Обычная платформа
             if (random < 20)
             {
                 result = new Simple (x, y);
             }
-            //Трамплин
+            // Батут
             else if (random >= 20 && random <= 45)
             {
                 result = new Trampoline (x, y);
             }
-            //Другое
+            // Движущаяся платформа
             else if (random >= 45 && random <= 60)
             {
                 result = new MovingPlatform (x, y);
             }
+            // Исчезающая платформа
+            else if (random > 60 && random <= 80)
+            {
+                result = new Fake(x, y);
+            }
+            // Другое
             else
             {
                 result = new Simple (x, y);

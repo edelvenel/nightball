@@ -154,7 +154,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5120bb9940dc5454e98d9fc3811a2321, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onTouched: 0
 --- !u!61 &45037254
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -273,7 +272,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5120bb9940dc5454e98d9fc3811a2321, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onTouched: 0
 --- !u!4 &257308052
 Transform:
   m_ObjectHideFlags: 0
@@ -357,8 +355,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 401505531}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.25, y: 2, z: 1}
+  m_LocalPosition: {x: -0.004, y: 0.018, z: 0}
+  m_LocalScale: {x: 1.334688, y: 1.3114283, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -724,8 +722,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 6c515a632192aa74cbfd5859b090ba5d, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -743,7 +741,7 @@ Transform:
   m_GameObject: {fileID: 942809906}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.08, y: 0.93, z: -3}
-  m_LocalScale: {x: 5, y: 5, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -793,18 +791,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0, y: -0.08}
+  m_Offset: {x: 0, y: -0.22694628}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.2, y: 0.2}
+    oldSize: {x: 0.53, y: 0.53}
     newSize: {x: 0.16, y: 0.16}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.08, y: 0.02}
+  m_Size: {x: 0.2, y: 0.055861384}
   m_EdgeRadius: 0
 --- !u!58 &942809912
 CircleCollider2D:
@@ -820,7 +818,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.08
+  m_Radius: 0.25
 --- !u!1 &1981384643
 GameObject:
   m_ObjectHideFlags: 0
@@ -853,7 +851,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 169, y: -38}
+  m_AnchoredPosition: {x: 182.3, y: -51.899994}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1981384645
@@ -876,7 +874,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: fe9af53adf903804e966bd887a928d9d, type: 3}
     m_FontSize: 18
     m_FontStyle: 0
     m_BestFit: 0
@@ -888,7 +886,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Count: 0 / 0'
+  m_Text: "\u0421\u0447\u0435\u0442: 0 / 0"
 --- !u!222 &1981384646
 CanvasRenderer:
   m_ObjectHideFlags: 0
