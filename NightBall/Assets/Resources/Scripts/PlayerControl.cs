@@ -9,9 +9,8 @@ public class PlayerControl : MonoBehaviour {
 
     readonly sbyte speed = 5; // скорость по оси x
     sbyte dirX = 0; // направление по оси x
-    Rigidbody2D body; 
-    public GameObject left; // объект с триггером, нажатие на который приводит к движению влево
-    public GameObject right; // объект с триггером, нажатие на который приводит к движению вправо
+    Rigidbody2D body;
+
 
     void Start ()
     {
@@ -33,12 +32,12 @@ public class PlayerControl : MonoBehaviour {
         }
 
         // Управление персонажем
-        if ((Input.GetKey(KeyCode.D) || right.GetComponent<Touch>().IsTouched) && !(Input.GetKey(KeyCode.A) || left.GetComponent<Touch>().IsTouched) && transform.position.x < 2.8)
+        if ((Input.touchCount == 1 && Input.GetTouch(0).position.x > Screen.width / 2) && transform.position.x < 2.8)
         {
             dirX = 1;
             Move();
         }
-        else if ((Input.GetKey(KeyCode.A) || left.GetComponent<Touch>().IsTouched) && !(Input.GetKey(KeyCode.D) || right.GetComponent<Touch>().IsTouched) && transform.position.x > -2.8)
+        else if ((Input.touchCount == 1 && Input.GetTouch(0).position.x < Screen.width / 2) && transform.position.x > -2.8)
         {
             dirX = -1;
             Move();

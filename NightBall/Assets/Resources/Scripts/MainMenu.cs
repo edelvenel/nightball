@@ -16,12 +16,18 @@ public class MainMenu : MonoBehaviour {
         Button exit = buttonExit.GetComponent<Button>();
 
         play.onClick.AddListener(Play);
+        info.onClick.AddListener(Info);
         exit.onClick.AddListener(Exit);
 	}
 
     void Play()
     {
         SceneManager.LoadScene ("SimpleScene", LoadSceneMode.Single);
+    }
+
+    void Info()
+    {
+        SceneManager.LoadScene("Info", LoadSceneMode.Single);
     }
 
     void Exit()
