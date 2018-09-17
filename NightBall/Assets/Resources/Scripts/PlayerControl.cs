@@ -10,12 +10,16 @@ public class PlayerControl : MonoBehaviour {
     readonly sbyte speed = 5; // скорость по оси x
     sbyte dirX = 0; // направление по оси x
     Rigidbody2D body;
+    Animator anim;
+    AudioSource aud;
 
 
     void Start ()
     {
         Physics2D.IgnoreLayerCollision (0, 5); // игнорирование коллизий слоя UI со слоем Default
+        anim = GetComponent<Animator>();
         body = GetComponent<Rigidbody2D>();
+        aud = GetComponent<AudioSource>();
         Jump(5);
 	}
 	
@@ -32,12 +36,12 @@ public class PlayerControl : MonoBehaviour {
         }
 
         // Управление персонажем
-        if ((Input.touchCount == 1 && Input.GetTouch(0).position.x > Screen.width / 2) && transform.position.x < 2.8)
+        if (((Input.touchCount == 1 && Input.GetTouch(0).position.x > Screen.width / 2) || Input.GetKey(KeyCode.D)) && transform.position.x < 2.8)
         {
             dirX = 1;
             Move();
         }
-        else if ((Input.touchCount == 1 && Input.GetTouch(0).position.x < Screen.width / 2) && transform.position.x > -2.8)
+        else if (((Input.touchCount == 1 && Input.GetTouch(0).position.x < Screen.width / 2) || Input.GetKey(KeyCode.A)) && transform.position.x > -2.8)
         {
             dirX = -1;
             Move();
@@ -68,6 +72,8 @@ public class PlayerControl : MonoBehaviour {
     void Jump (sbyte height)
     {
         body.velocity = new Vector2 (body.velocity.x, height);
+        anim.Play("Player_Jump");
+        aud.PlayOneShot(Resources.Load<AudioClip>("Sounds/Jump"));
     }
 
     // Отслеживание пересечений с платформами
@@ -85,19 +91,18 @@ public class PlayerControl : MonoBehaviour {
         }
     }
 
-    // Отслеживание пересечений со звездами
+    // Отслеживание пересечений с мелками
     void OnTriggerEnter2D (Collider2D collision)
     {
-        if (collision.tag == "Star")
+        if (collision.tag == "Chalk")
         {
             string name = collision.name;
             ObjectHandle handle = Activator.CreateInstance("Assembly-CSharp", name);
-            Star star = (Star)handle.Unwrap();
-            Game.AddPoints(star.Points);
-            Destroy(star.Exemplar);
+            Chalk chalk = (Chalk)handle.Unwrap();
+            Game.AddPoints(chalk.Points);
+            Destroy(chalk.Exemplar);
             Destroy(collision);
             collision.GetComponent<SpriteRenderer>().enabled = false;
-            collision.GetComponent<Light>().enabled = false;
         }
     }
 }

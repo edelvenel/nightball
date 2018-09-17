@@ -10,30 +10,34 @@ using System.Runtime.Serialization.Formatters.Binary;
 [System.Serializable]
 public class Game : MonoBehaviour {
 
-    static int starsCount; // кол-во собранных звезд
-    static int recordStars; // рекорд
+    static int chalksCount; // кол-во собранных мелков
+    static int record; // рекорд
+    static int height; // текущая высота
+
+    static AudioSource aud;
 
     Dictionary<sbyte, Platform> platforms; // платформы на сцене
-    Dictionary<sbyte, BGStar> bgStars; // фоны со звездами
-    Dictionary<sbyte, Star> stars; // звезды для сбора
+    Dictionary<sbyte, Bg> bgs; // фоны
+    Dictionary<sbyte, Chalk> chalks; // мелки
     
     bool updateScene; // была ли сцена с платформами обновлена
     bool updateBackground; // были ли обновлен задний план
-    bool updateStars; // были ли обновлены звезды для сбора
+    bool updateChalks; // были ли обновлены мелки
 
     Platform bottom; // самая нижняя платформа
-    BGStar bgBottom; // самый нижний фон со звездами
-    Star starBottom; // самая нижняя звезда
-
+    Bg bgBottom; // самый нижний фон
+    Chalk chalkBottom; // самый нижний мелок
 
     void Awake ()
     {
         platforms = new Dictionary<sbyte, Platform>();
-        bgStars = new Dictionary<sbyte, BGStar>();
-        stars = new Dictionary<sbyte, Star>();
+        bgs = new Dictionary<sbyte, Bg>();
+        chalks = new Dictionary<sbyte, Chalk>();
+        aud = GetComponent<AudioSource>();
 
-        starsCount = 0;
-        recordStars = LoadOldRecord();
+        chalksCount = 25;
+        height = 0;
+        record = LoadOldRecord();
 
         //Добавление начальных 10 платформ
         bottom = new Simple();
@@ -46,34 +50,40 @@ public class Game : MonoBehaviour {
             platforms.Add(i, RandomPlatform(previous));
         }
 
-        //Добавление 3 фоновых спрайтов со звездами
-        bgBottom = new BGStar(-11); //Первый фон со звездами находится на 11 ниже Игрока (11 - высота фонового спрайта)
-        bgStars.Add(0, bgBottom);
+        //Добавление 3 фоновых спрайтов
+        bgBottom = new Bg(-BGHeight()); //Первый фон находится на высоту фонового спрайта ниже игрока
+        bgs.Add(0, bgBottom);
 
         for (sbyte i = 1; i < 3; i++)
         {
-            BGStar bgPrevious;
-            bgStars.TryGetValue((sbyte)(i - 1), out bgPrevious);
-            bgStars.Add(i, new BGStar(bgPrevious.Obj.transform.position.y + 11));
+            Bg bgPrevious;
+            bgs.TryGetValue((sbyte)(i - 1), out bgPrevious);
+            bgs.Add(i, new Bg(bgPrevious.Obj.transform.position.y + BGHeight()));
+            if (!bgPrevious.Obj.GetComponent<SpriteRenderer>().flipY)
+            {
+                Bg bgTemp;
+                bgs.TryGetValue(i, out bgTemp);
+                bgTemp.Obj.GetComponent<SpriteRenderer>().flipY = true;
+            }
         }
 
-        //Добавление звезд
-        starBottom = RandomStar(new SimpleStar(Random.Range(-2.0f, 2.0f), Random.Range(1.0f, 3.0f)));
-        stars.Add(0, starBottom);
+        //Добавление мелков
+        chalkBottom = RandomChalk(new SimpleChalk(Random.Range(-2.0f, 2.0f), Random.Range(1.0f, 3.0f)));
+        chalks.Add(0, chalkBottom);
 
         for (sbyte i = 1; i < 5; i++)
         {
-            Star starPrevious;
-            stars.TryGetValue((sbyte)(i - 1), out starPrevious);
-            stars.Add(i, RandomStar(starPrevious));
+            Chalk chalkPrevious;
+            chalks.TryGetValue((sbyte)(i - 1), out chalkPrevious);
+            chalks.Add(i, RandomChalk(chalkPrevious));
         }
     }
 
     void FixedUpdate()
     {
         updateScene = GameObject.FindGameObjectWithTag("Player").transform.position.y - bottom.PosY <= 6.0f;
-        updateBackground = GameObject.FindGameObjectWithTag("Player").transform.position.y - bgBottom.Obj.transform.position.y <= 10.0f;
-        updateStars = GameObject.FindGameObjectWithTag("Player").transform.position.y - starBottom.PosY <= 6.0f;
+        updateBackground = GameObject.FindGameObjectWithTag("Player").transform.position.y - bgBottom.Obj.transform.position.y <= 17.0f;
+        updateChalks = GameObject.FindGameObjectWithTag("Player").transform.position.y - chalkBottom.PosY <= 6.0f;
 
         if (!updateScene)
         {
@@ -82,7 +92,7 @@ public class Game : MonoBehaviour {
             platforms.Remove(0);
 
             // Переприсвоение индексов платформ
-            for (sbyte i = 1; i < 10; i++)
+            for (sbyte i = 1; i < platforms.Count; i++)
             {
                 Platform temp;
                 platforms.TryGetValue(i, out temp);
@@ -91,79 +101,102 @@ public class Game : MonoBehaviour {
             }
 
             // Добавление новой платформы
-            Platform previous;
-            platforms.TryGetValue(8, out previous);
-            platforms.Add(9, RandomPlatform(previous));
-            platforms.TryGetValue(0, out bottom);
-
+            if (chalksCount > 0)
+            {
+                Platform previous;
+                platforms.TryGetValue((sbyte)(platforms.Count - 2), out previous);
+                platforms.Add((sbyte)(platforms.Count - 1), RandomPlatform(previous));
+                platforms.TryGetValue(0, out bottom);
+                chalksCount--;
+            }
+            else
+            {
+                platforms.TryGetValue(0, out bottom);
+            }
             if (!updateScene) return;
         }
         
         if (!updateBackground)
         {
-            // Удаление нижнего фона со звездами
+            // Удаление нижнего фона
             Destroy(bgBottom.Obj);
-            bgStars.Remove(0);
+            bgs.Remove(0);
 
             // Переприсвоение индексов фонов
             for (sbyte i=1; i<3; i++)
             {
-                BGStar bgTemp;
-                bgStars.TryGetValue(i, out bgTemp);
-                bgStars.Add((sbyte)(i - 1), bgTemp);
-                bgStars.Remove(i);
+                Bg bgTemp;
+                bgs.TryGetValue(i, out bgTemp);
+                bgs.Add((sbyte)(i - 1), bgTemp);
+                bgs.Remove(i);
             }
 
             // Добавление нового фона
-            BGStar bgPrevious;
-            bgStars.TryGetValue(1, out bgPrevious);
-            bgStars.Add(2, new BGStar(bgPrevious.Obj.transform.position.y + 11));
-            bgStars.TryGetValue(0, out bgBottom);
+            Bg bgPrevious;
+            bgs.TryGetValue(1, out bgPrevious);
+            bgs.Add(2, new Bg(bgPrevious.Obj.transform.position.y + BGHeight()));
+            bgs.TryGetValue(0, out bgBottom);
+
+            // Переворачивание фона
+            if (bgBottom.Obj.GetComponent<SpriteRenderer>().flipY)
+            { 
+                Bg bgThird;
+                bgs.TryGetValue(2, out bgThird);
+                bgThird.Obj.GetComponent<SpriteRenderer>().flipY = true;
+            }
+            else
+            {
+                Bg bgSecond;
+                bgs.TryGetValue(1, out bgSecond);
+                bgSecond.Obj.GetComponent<SpriteRenderer>().flipY = true;
+            }
 
             if (!updateBackground) return;
         }
 
-        if (!updateStars)
+        if (!updateChalks)
         {
-            // Удаление нижней звезды
-            Destroy(starBottom.Exemplar);
-            stars.Remove(0);
+            // Удаление нижнего мелка
+            Destroy(chalkBottom.Exemplar);
+            chalks.Remove(0);
 
-            // Переприсваивание индексов звезд
-            for (sbyte i=1; i<5; i++)
+            // Переприсваивание индексов мелков
+            for (sbyte i = 1; i < chalks.Count; i++)
             {
-                Star starTemp;
-                stars.TryGetValue(i, out starTemp);
-                stars.Add((sbyte)(i - 1), starTemp);
-                stars.Remove(i);
+                Chalk chalkTemp;
+                chalks.TryGetValue(i, out chalkTemp);
+                chalks.Add((sbyte)(i - 1), chalkTemp);
+                chalks.Remove(i);
             }
 
-            // Добавление новой звезды
-            Star starPrevious;
-            stars.TryGetValue(3, out starPrevious);
-            stars.Add(4, RandomStar(starPrevious));
-            stars.TryGetValue(0, out starBottom);
-
-            if (!updateStars) return;
+            // Добавление нового мелка
+            Chalk chalkPrevious;
+            chalks.TryGetValue((sbyte)(chalks.Count - 2), out chalkPrevious);
+            chalks.Add((sbyte)(chalks.Count - 1), RandomChalk(chalkPrevious));
+            chalks.TryGetValue(0, out chalkBottom);
+            if (!updateChalks) return;
         }
         
     }
 
     void Update () {
-		// Смерть
-        if (bottom.PosY - GameObject.FindGameObjectWithTag("Player").transform.position.y > 4)
+        // Смерть
+        if (bottom.PosY - GameObject.FindGameObjectWithTag("Player").transform.position.y > 2 || chalksCount < 1)  Death();
+
+        // Подсчет высоты
+        if (height < (int)(GameObject.FindGameObjectWithTag("Player").transform.position.y))
         {
-            SaveNewRecord(starsCount);
-            SceneManager.LoadScene("SimpleScene", LoadSceneMode.Single);
+            height = (int)(GameObject.FindGameObjectWithTag("Player").transform.position.y);
         }
 
         // Вывод счета на экран
-        GameObject.FindGameObjectWithTag("Count").GetComponent<Text>().text = "Count: " + starsCount.ToString() + " / " + recordStars.ToString();
+        GameObject.FindGameObjectWithTag("Chalks").GetComponent<Text>().text = chalksCount.ToString();
+        GameObject.FindGameObjectWithTag("Count").GetComponent<Text>().text = height.ToString() + " / " + record.ToString();
 
         // Выход из игры
         if (Input.GetKey(KeyCode.Escape))
         {
-            SaveNewRecord(starsCount);
+            SaveNewRecord(chalksCount);
             SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
         }
 	}
@@ -178,36 +211,7 @@ public class Game : MonoBehaviour {
         int random = Random.Range(0, 100);
 
         // Низкая сложность
-        if (starsCount < 100)
-        {
-            // Обычная платформа
-            if (random < 40)
-            {
-                result = new Simple (x, y);
-            }
-            // Батут
-            else if (random >= 40 && random <= 45)
-            {
-                result = new Trampoline (x, y);
-            }
-            // Движущаяся платформа
-            else if (random >= 45 && random <= 50)
-            {
-                result = new MovingPlatform (x, y);
-            }
-            // Исчезающая платформа
-            else if (random > 50 && random <=60)
-            {
-                result = new Fake(x, y);
-            }
-            // Другое
-            else
-            {
-                result = new Simple (x, y);
-            }
-        }
-        // Средняя сложность
-        else if (starsCount >= 100 && starsCount <= 300)
+        if (chalksCount < 100)
         {
             // Обычная платформа
             if (random < 30)
@@ -220,12 +224,41 @@ public class Game : MonoBehaviour {
                 result = new Trampoline (x, y);
             }
             // Движущаяся платформа
-            else if (random >= 45 && random <= 60)
+            else if (random >= 45 && random <= 70)
             {
                 result = new MovingPlatform (x, y);
             }
             // Исчезающая платформа
-            else if (random > 60 && random <= 75)
+            else if (random > 70 && random <=90)
+            {
+                result = new Fake(x, y);
+            }
+            // Другое
+            else
+            {
+                result = new Simple (x, y);
+            }
+        }
+        // Средняя сложность
+        else if (chalksCount >= 100 && chalksCount <= 300)
+        {
+            // Обычная платформа
+            if (random < 20)
+            {
+                result = new Simple (x, y);
+            }
+            // Батут
+            else if (random >= 20 && random <= 45)
+            {
+                result = new Trampoline (x, y);
+            }
+            // Движущаяся платформа
+            else if (random >= 45 && random <= 80)
+            {
+                result = new MovingPlatform (x, y);
+            }
+            // Исчезающая платформа
+            else if (random > 80 && random <= 95)
             {
                 result = new Fake(x, y);
             }
@@ -239,22 +272,22 @@ public class Game : MonoBehaviour {
         else
         {
             // Обычная платформа
-            if (random < 20)
+            if (random < 10)
             {
                 result = new Simple (x, y);
             }
             // Батут
-            else if (random >= 20 && random <= 45)
+            else if (random >= 10 && random <= 40)
             {
                 result = new Trampoline (x, y);
             }
             // Движущаяся платформа
-            else if (random >= 45 && random <= 60)
+            else if (random >= 40 && random <= 80)
             {
                 result = new MovingPlatform (x, y);
             }
             // Исчезающая платформа
-            else if (random > 60 && random <= 80)
+            else if (random > 80 && random <= 95)
             {
                 result = new Fake(x, y);
             }
@@ -268,29 +301,29 @@ public class Game : MonoBehaviour {
         return result;
     }
 
-    // Создание случайной звезды
-    Star RandomStar (Star previous)
+    // Создание случайного мелка
+    Chalk RandomChalk (Chalk previous)
     {
         float x = Random.Range(-2.0f, 2.0f);
-        float y = previous.PosY + Random.Range(2.5f, 6.0f);
+        float y = previous.PosY + Random.Range(2.5f, 5.0f);
 
-        Star result;
+        Chalk result;
         float random = Random.Range(0.0f, 81.0f);
 
         if (random < 70)
         {
-            result = new SimpleStar(x, y);
+            result = new SimpleChalk(x, y);
         }
         else if (random >=70 && random < 75)
         {
-            result = new YoungStar(x, y);
+            result = new RedChalk(x, y);
         }
         else if (random >= 76 && random < 79)
         {
-            result = new OldStar(x, y);
+            result = new GreenChalk(x, y);
         } else
         {
-            result = new SuperStar(x, y);
+            result = new VioletChalk(x, y);
         }
 
         return result;
@@ -315,13 +348,14 @@ public class Game : MonoBehaviour {
     //Добавление очков
     public static void AddPoints (int points)
     {
-        starsCount += points;
+        chalksCount += points;
+        aud.PlayOneShot(Resources.Load<AudioClip>("Sounds/Chalk"));
     }
 
     //Сохранение
     void SaveNewRecord (int count)
     {
-        if (LoadOldRecord() < starsCount)
+        if (LoadOldRecord() < height)
         {
             PlayerPrefs.SetInt("Record", count);
         }
@@ -330,7 +364,21 @@ public class Game : MonoBehaviour {
     // Загрузка сохранения
     int LoadOldRecord()
     {
-        int count = PlayerPrefs.GetInt("Record");
-        return count;
+        int record = PlayerPrefs.GetInt("Record");
+        return record;
+    }
+
+    // Получение высоты блока
+    float BGHeight()
+    {
+        float height = Resources.Load<GameObject>("Prefabs/Background").GetComponent<SpriteRenderer>().bounds.size.y;
+        return height;
+    }
+
+    // Смерть
+    void Death()
+    {
+        SaveNewRecord(height);
+        SceneManager.LoadScene("SimpleScene", LoadSceneMode.Single);
     }
 }

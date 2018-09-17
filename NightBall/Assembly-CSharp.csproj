@@ -62,25 +62,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Back.cs" />
-    <Compile Include="Assets\Resources\Scripts\Background.cs" />
-    <Compile Include="Assets\Resources\Scripts\BGStar.cs" />
+    <Compile Include="Assets\Resources\Scripts\Bg.cs" />
+    <Compile Include="Assets\Resources\Scripts\Chalk.cs" />
+    <Compile Include="Assets\Resources\Scripts\ChalkCheck.cs" />
+    <Compile Include="Assets\Resources\Scripts\ChalkRotate.cs" />
     <Compile Include="Assets\Resources\Scripts\Fake.cs" />
     <Compile Include="Assets\Resources\Scripts\Game.cs" />
+    <Compile Include="Assets\Resources\Scripts\GreenChalk.cs" />
     <Compile Include="Assets\Resources\Scripts\MainCamera.cs" />
     <Compile Include="Assets\Resources\Scripts\MainMenu.cs" />
     <Compile Include="Assets\Resources\Scripts\Move.cs" />
     <Compile Include="Assets\Resources\Scripts\MovingPlatform.cs" />
-    <Compile Include="Assets\Resources\Scripts\OldStar.cs" />
     <Compile Include="Assets\Resources\Scripts\Platform.cs" />
     <Compile Include="Assets\Resources\Scripts\PlayerControl.cs" />
+    <Compile Include="Assets\Resources\Scripts\RedChalk.cs" />
     <Compile Include="Assets\Resources\Scripts\Simple.cs" />
-    <Compile Include="Assets\Resources\Scripts\SimpleStar.cs" />
-    <Compile Include="Assets\Resources\Scripts\Star.cs" />
-    <Compile Include="Assets\Resources\Scripts\StarCheck.cs" />
-    <Compile Include="Assets\Resources\Scripts\SuperStar.cs" />
+    <Compile Include="Assets\Resources\Scripts\SimpleChalk.cs" />
     <Compile Include="Assets\Resources\Scripts\Touch.cs" />
     <Compile Include="Assets\Resources\Scripts\Trampoline.cs" />
-    <Compile Include="Assets\Resources\Scripts\YoungStar.cs" />
+    <Compile Include="Assets\Resources\Scripts\VioletChalk.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>D:/NightBall/NightBall/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
