@@ -11,7 +11,7 @@ public class Bg
         // Создается объект Bg
         Obj = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Background"));
         Obj.transform.parent = GameObject.Find("BG").transform;
-        obj.transform.position = new Vector3(0, y, -1);
+        obj.transform.position = new Vector3(0, y, 0);
     }
 
     public GameObject Obj

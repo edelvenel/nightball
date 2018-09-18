@@ -73,7 +73,7 @@ public class PlayerControl : MonoBehaviour {
     {
         body.velocity = new Vector2 (body.velocity.x, height);
         anim.Play("Player_Jump");
-        aud.PlayOneShot(Resources.Load<AudioClip>("Sounds/Jump"));
+        //aud.PlayOneShot(Resources.Load<AudioClip>("Sounds/jump"));
     }
 
     // Отслеживание пересечений с платформами
@@ -96,6 +96,7 @@ public class PlayerControl : MonoBehaviour {
     {
         if (collision.tag == "Chalk")
         {
+            aud.PlayOneShot(Resources.Load<AudioClip>("Sounds/chalk"));
             string name = collision.name;
             ObjectHandle handle = Activator.CreateInstance("Assembly-CSharp", name);
             Chalk chalk = (Chalk)handle.Unwrap();

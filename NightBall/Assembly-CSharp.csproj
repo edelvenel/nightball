@@ -61,10 +61,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Back.cs" />
+    <Compile Include="Assets\Resources\Scripts\Back.cs" />
     <Compile Include="Assets\Resources\Scripts\Bg.cs" />
     <Compile Include="Assets\Resources\Scripts\Chalk.cs" />
-    <Compile Include="Assets\Resources\Scripts\ChalkCheck.cs" />
     <Compile Include="Assets\Resources\Scripts\ChalkRotate.cs" />
     <Compile Include="Assets\Resources\Scripts\Fake.cs" />
     <Compile Include="Assets\Resources\Scripts\Game.cs" />
@@ -73,6 +72,7 @@
     <Compile Include="Assets\Resources\Scripts\MainMenu.cs" />
     <Compile Include="Assets\Resources\Scripts\Move.cs" />
     <Compile Include="Assets\Resources\Scripts\MovingPlatform.cs" />
+    <Compile Include="Assets\Resources\Scripts\Picture.cs" />
     <Compile Include="Assets\Resources\Scripts\Platform.cs" />
     <Compile Include="Assets\Resources\Scripts\PlayerControl.cs" />
     <Compile Include="Assets\Resources\Scripts\RedChalk.cs" />

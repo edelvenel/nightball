@@ -14,32 +14,33 @@ public class Game : MonoBehaviour {
     static int record; // рекорд
     static int height; // текущая высота
 
-    static AudioSource aud;
-
     Dictionary<sbyte, Platform> platforms; // платформы на сцене
     Dictionary<sbyte, Bg> bgs; // фоны
     Dictionary<sbyte, Chalk> chalks; // мелки
+    Dictionary<sbyte, Picture> pictures; // фоновые картинки
     
     bool updateScene; // была ли сцена с платформами обновлена
     bool updateBackground; // были ли обновлен задний план
     bool updateChalks; // были ли обновлены мелки
+    bool updatePictures; // были ли обновлены фоновые картинки
 
     Platform bottom; // самая нижняя платформа
     Bg bgBottom; // самый нижний фон
     Chalk chalkBottom; // самый нижний мелок
+    Picture pictBottom; // самая нижеяя картинка
 
     void Awake ()
     {
         platforms = new Dictionary<sbyte, Platform>();
         bgs = new Dictionary<sbyte, Bg>();
         chalks = new Dictionary<sbyte, Chalk>();
-        aud = GetComponent<AudioSource>();
+        pictures = new Dictionary<sbyte, Picture>();
 
         chalksCount = 25;
         height = 0;
         record = LoadOldRecord();
 
-        //Добавление начальных 10 платформ
+        // Добавление начальных 10 платформ
         bottom = new Simple();
         platforms.Add(0, bottom);
 
@@ -50,7 +51,7 @@ public class Game : MonoBehaviour {
             platforms.Add(i, RandomPlatform(previous));
         }
 
-        //Добавление 3 фоновых спрайтов
+        // Добавление 3 фоновых спрайтов
         bgBottom = new Bg(-BGHeight()); //Первый фон находится на высоту фонового спрайта ниже игрока
         bgs.Add(0, bgBottom);
 
@@ -67,7 +68,7 @@ public class Game : MonoBehaviour {
             }
         }
 
-        //Добавление мелков
+        // Добавление мелков
         chalkBottom = RandomChalk(new SimpleChalk(Random.Range(-2.0f, 2.0f), Random.Range(1.0f, 3.0f)));
         chalks.Add(0, chalkBottom);
 
@@ -77,14 +78,27 @@ public class Game : MonoBehaviour {
             chalks.TryGetValue((sbyte)(i - 1), out chalkPrevious);
             chalks.Add(i, RandomChalk(chalkPrevious));
         }
+
+        // Добавление картинок
+        pictBottom = new Picture(Random.Range(-2.0f, 2.0f), Random.Range(1.0f, 3.0f));
+        pictures.Add(0, pictBottom);
+
+        for (sbyte i=1; i < 17; i++)
+        {
+            Picture pictPrevious;
+            pictures.TryGetValue((sbyte)(i - 1), out pictPrevious);
+            pictures.Add(i, new Picture(Random.Range(-2.0f, 2.0f), pictPrevious.Exemplar.transform.position.y + Random.Range(1.0f,4.0f)));
+        }
     }
 
     void FixedUpdate()
     {
         updateScene = GameObject.FindGameObjectWithTag("Player").transform.position.y - bottom.PosY <= 6.0f;
-        updateBackground = GameObject.FindGameObjectWithTag("Player").transform.position.y - bgBottom.Obj.transform.position.y <= 17.0f;
+        updateBackground = GameObject.FindGameObjectWithTag("Player").transform.position.y - bgBottom.Obj.transform.position.y <= 20.0f;
         updateChalks = GameObject.FindGameObjectWithTag("Player").transform.position.y - chalkBottom.PosY <= 6.0f;
+        updatePictures = GameObject.FindGameObjectWithTag("Player").transform.position.y - pictBottom.Exemplar.transform.position.y <= 20.0f;
 
+        // ----- Обновление платформ -----
         if (!updateScene)
         {
             // Удаление самой нижней платформы
@@ -113,9 +127,11 @@ public class Game : MonoBehaviour {
             {
                 platforms.TryGetValue(0, out bottom);
             }
+
             if (!updateScene) return;
         }
         
+        // ----- Обновление фонов -----
         if (!updateBackground)
         {
             // Удаление нижнего фона
@@ -154,6 +170,7 @@ public class Game : MonoBehaviour {
             if (!updateBackground) return;
         }
 
+        // ----- Обновление мелков -----
         if (!updateChalks)
         {
             // Удаление нижнего мелка
@@ -174,7 +191,33 @@ public class Game : MonoBehaviour {
             chalks.TryGetValue((sbyte)(chalks.Count - 2), out chalkPrevious);
             chalks.Add((sbyte)(chalks.Count - 1), RandomChalk(chalkPrevious));
             chalks.TryGetValue(0, out chalkBottom);
+
             if (!updateChalks) return;
+        }
+
+        // ----- Обновление картинок -----
+        if (!updatePictures)
+        {
+            // Удаление нижней картинки
+            Destroy(pictBottom.Exemplar);
+            pictures.Remove(0);
+
+            // Переприсваивание индексов картинок
+            for (sbyte i=1; i < pictures.Count; i++)
+            {
+                Picture pictureTemp;
+                pictures.TryGetValue(i, out pictureTemp);
+                pictures.Add((sbyte)(i - 1), pictureTemp);
+                pictures.Remove(i);
+            }
+
+            // Добавление новой картинки
+            Picture pictPrevious;
+            pictures.TryGetValue((sbyte)(pictures.Count - 2), out pictPrevious);
+            pictures.Add((sbyte)(pictures.Count - 1), new Picture(Random.Range(-2.0f, 2.0f), pictPrevious.Exemplar.transform.position.y + Random.Range(1.0f, 4.0f)));
+            pictures.TryGetValue(0, out pictBottom);
+
+            if (!updatePictures) return;
         }
         
     }
@@ -349,7 +392,6 @@ public class Game : MonoBehaviour {
     public static void AddPoints (int points)
     {
         chalksCount += points;
-        aud.PlayOneShot(Resources.Load<AudioClip>("Sounds/Chalk"));
     }
 
     //Сохранение
@@ -379,6 +421,6 @@ public class Game : MonoBehaviour {
     void Death()
     {
         SaveNewRecord(height);
-        SceneManager.LoadScene("SimpleScene", LoadSceneMode.Single);
+        SceneManager.LoadScene("Game", LoadSceneMode.Single);
     }
 }
